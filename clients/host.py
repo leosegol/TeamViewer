@@ -2,16 +2,6 @@ import threading
 
 import d3dshot
 import pyautogui
-from pynput.mouse import Button
-
-
-def converte_button(button):
-    if button == Button.left:
-        return 'left'
-    elif button == Button.right:
-        return 'right'
-    else:
-        return 'middle'
 
 
 class HostClient:
@@ -25,10 +15,11 @@ class HostClient:
         print(data)
         if "pos" in data:
             x, y = data.split("pos ")[1].split(" ")
-            pyautogui.moveTo(int(float(x)*self.display[0]), int(float(y)*self.display[1]))
+            pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
         elif "click" in data:
             x, y, button = data.split("click ")[1].split(" ")
-            pyautogui.click(int(float(x)*self.display[0]), int(float(y)*self.display[1]), button=converte_button(button))
+            pyautogui.click(int(float(x) * self.display[0]), int(float(y) * self.display[1]),
+                            button=button)
         elif "scroll" in data:
             dx, dy = data.split("scroll ")[1].split(" ")
             pyautogui.scroll(int(dy))
