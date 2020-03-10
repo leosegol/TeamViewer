@@ -1,8 +1,6 @@
 import threading
-
 import pynput
 from PIL import Image
-
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 

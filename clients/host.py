@@ -35,7 +35,7 @@ class HostClient:
             pyautogui.hscroll(int(dx))
         elif "press" in data:
             key = data.split("press ")[1]
-            pyautogui.keyDown(key)
+            pyautogui.press(key)
         elif "release" in data:
             key = data.split("release ")[1]
             pyautogui.keyUp(key)
