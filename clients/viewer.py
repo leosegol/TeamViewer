@@ -1,6 +1,9 @@
 import threading
+
 import pynput
 from PIL import Image
+import matplotlib.pyplot as plt
+
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 
@@ -28,11 +31,10 @@ class ViewerClient:
                 total_data += data
             if length < 0:
                 total_data = total_data[:length]
-            if "exit".encode() in total_data:
-                break
             image = Image.frombytes(mode, size, total_data)
-            image.show(title="host's screen")
-            image.close()
+            plt.imshow(image)
+            plt.show()  # display it
+            plt.close()
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.client_socket)

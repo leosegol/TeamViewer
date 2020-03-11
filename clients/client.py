@@ -4,19 +4,18 @@ from clients.host import HostClient
 from clients.viewer import ViewerClient
 
 MAIN_MENU = """
- 1) print all connected clients
- 2) become a host
- 3) stop hosting
- 4) my stats
+ 1) become a host
+ 2) stop hosting
+ 3) start hosting
+ 4) my pass
  5) exit
- commands: |connect <password>, start(has to be a host)|
+ commands: |connect <password>|
  """
 
 
 class Client:
     def __init__(self):
         self.client_socket = socket.socket()
-        self.is_host = False
 
     def connect(self, ip, port):
         self.client_socket.connect((ip, port))
@@ -27,31 +26,30 @@ class Client:
             opt = input('choose an option: ')
             self.client_socket.send(opt.encode())
             if opt == '1':
-                print(self.client_socket.recv(1024).decode())
-            elif opt == '2':
-                self.is_host = True
-                print(f'Host mode is activated(pass={self.client_socket.recv(1024).decode()})')
+                print(f"Your pass: {self.client_socket.recv(1024).decode()}")
             elif opt == '3':
-                self.is_host = False
-                print('you stopped hosting')
+                HostClient(self.client_socket).host_mode()
             elif opt == '4':
-                print(self.client_socket.recv(1024).decode())
+                password = self.client_socket.recv(1024).decode()
+                if password != -1:
+                    print(f"Your password is {password}")
+                else:
+                    print("You must be a host")
             elif opt == '5' or opt.lower() == 'exit':
                 break
-            elif 'start' in opt and self.is_host:
-                HostClient(self.client_socket).host_mode()
-            elif 'connect' in opt and not self.is_host:
+            elif 'connect' in opt:
                 response = self.client_socket.recv(1024).decode()
                 if response == 'ok':
+                    print("Wait for host to start the conversation")
                     ViewerClient(self.client_socket).viewer_mode()
                 else:
                     print(response)
-            input('press enter to continue...')
+            input('press any key to continue...')
 
 
 def main():
     client = Client()
-    client.connect('10.0.0.4', 666)  # this stats later will be taken from the list (local_servers())
+    client.connect('127.0.0.1', 666)  # this stats later will be taken from the list (local_servers())
     client.main_conversation()
     client.client_socket.close()
 
