@@ -46,9 +46,8 @@ class Socket:
                 self.partner = host_client
                 self.partner.partner = self
                 self.viewer = True
-                return "ok"
-            return "not a matching password"
-        return "You cant host and connect"
+                return True
+        return False
 
     def can_start_session(self):
         return self.started_hosting or self.viewer and self.partner and self.partner.viewer \

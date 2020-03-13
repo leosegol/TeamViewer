@@ -24,7 +24,7 @@ class Client:
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')
-            self.client_socket.send(f"instruction {opt}".encode())
+            self.client_socket.send(f"instruction {opt},".encode())
             if opt == '1':
                 print(f"Your pass: {self.client_socket.recv(1024).decode()}")
             elif opt == '3':

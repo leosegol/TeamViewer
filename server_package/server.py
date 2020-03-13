@@ -37,18 +37,16 @@ class Server:
 
     def connect(self, pin, my_client):
         for client in self.clients:
-            if my_client.connect(client, pin) == "ok":
+            if my_client.connect(client, pin):
                 return "ok"
-            elif my_client.connect(client, pin) == "You cant host and connect":
-                return "You cant host and connect"
-        return "not a matching password"
+        return "something went wrong"
 
     def main_conversation(self, my_client):
         try:
             while True:
                 request = my_client.recv(1024).decode()
                 if "instruction " in request:
-                    request = request.split("instruction ")[1]
+                    request = request.split("instruction ")[1].split(",")[0]
                     if request == "1":
                         my_client.become_host(self.create_password())
                         my_client.send(str(my_client.pin))
