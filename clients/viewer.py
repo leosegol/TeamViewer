@@ -17,6 +17,7 @@ class ViewerClient:
         while True:
             total_data = b''
             settings = self.client_socket.recv(1024).decode()
+            print(settings)
             mode, length, x, y = settings.split(", ")
             y, data = y.split(")")
             size = int(x[1:-1]), int(y[1:-1])

@@ -6,7 +6,8 @@ from server_package import my_socket
 
 def session(my_client):
     while True:
-        if my_client.can_start_session:
+        print(my_client.can_start_session())
+        if my_client.can_start_session():
             data = my_client.recv(1046576)
             my_client.partner.send(data)
 
@@ -54,6 +55,7 @@ class Server:
                         my_client.stop_hosting()
                     elif request == "3":
                         if my_client.start_hosting():
+                            my_client.send("ok")
                             session(my_client)
                     elif request == "4":
                         my_client.send(str(my_client.pin))
