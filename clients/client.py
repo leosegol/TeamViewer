@@ -28,14 +28,17 @@ class Client:
             if opt == '1':
                 print(f"Your pass: {self.client_socket.recv(1024).decode()}")
             elif opt == '3':
-                HostClient(self.client_socket).host_mode()
+                response = self.client_socket.recv(1024).decode()
+                print(response)
+                if "ok" in response:
+                    HostClient(self.client_socket).host_mode()
             elif opt == '4':
                 password = self.client_socket.recv(1024).decode()
-                if password != -1:
+                if password != "-1":
                     print(f"Your password is {password}")
                 else:
                     print("You must be a host")
-            elif opt == '5' or opt.lower() == 'exit':
+            elif opt == '5':
                 break
             elif 'connect' in opt:
                 response = self.client_socket.recv(1024).decode()

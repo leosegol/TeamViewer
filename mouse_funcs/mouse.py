@@ -1,6 +1,6 @@
 import pyautogui
 from pynput.mouse import Button
-
+import socket
 
 def convert_button(button):
     if button == Button.left:
@@ -18,10 +18,19 @@ class Mouse:
         self.display = pyautogui.size()
 
     def on_move(self, x, y):
-        self.client_socket.send(f"pos {x / self.display[0]} {y / self.display[1]},".encode())
+        try:
+            self.client_socket.send(f"pos {x / self.display[0]} {y / self.display[1]},".encode())
+        except OSError:
+            pass
 
     def on_click(self, x, y, button, pressed):
-        self.client_socket.send(f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
+        try:
+            self.client_socket.send(f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
+        except OSError:
+            pass
 
     def on_scroll(self, x, y, dx, dy):
-        self.client_socket.send(f"scroll {dx} {dy},".encode())
+        try:
+            self.client_socket.send(f"scroll {dx} {dy},".encode())
+        except OSError:
+            pass

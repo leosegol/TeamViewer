@@ -32,9 +32,7 @@ class ViewerClient:
             if length < 0:
                 total_data = total_data[:length]
             image = Image.frombytes(mode, size, total_data)
-            plt.imshow(image)
-            plt.show()  # display it
-            plt.close()
+            image.show()
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.client_socket)

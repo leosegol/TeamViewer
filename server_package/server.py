@@ -30,9 +30,13 @@ class Server:
 
     def session(self, my_client):
         while True:
+            data = my_client.recv(1046576)
             if my_client.can_start_session:
-                data = my_client.recv(1046576)
-                my_client.partner.send(data)
+                try:
+                    my_client.partner.send(data)
+                except AttributeError:
+                    print("toddels")
+                    break
 
     def connect(self, pin, my_client):
         for client in self.clients:
@@ -45,15 +49,21 @@ class Server:
     def main_conversation(self, my_client):
         try:
             while True:
-                request = my_client.recv(1024).decode()
+                request = my_client.recv(1024)
+                print(request)
+                request = request.decode()
                 if request == "1":
                     my_client.become_host(self.create_password())
                     my_client.send(str(my_client.pin))
                 elif request == "2":
                     my_client.stop_hosting()
                 elif request == "3":
+                    print(my_client.string())
                     if my_client.start_hosting():
+                        my_client.send("ok")
                         self.session(my_client)
+                        continue
+                    my_client.send("cant start hosting")
                 elif request == "4":
                     my_client.send(str(my_client.pin))
                 elif request == "5":
