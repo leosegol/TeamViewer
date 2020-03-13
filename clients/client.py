@@ -24,7 +24,7 @@ class Client:
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')
-            self.client_socket.send(opt.encode())
+            self.client_socket.send(f"instruction {opt}".encode())
             if opt == '1':
                 print(f"Your pass: {self.client_socket.recv(1024).decode()}")
             elif opt == '3':
@@ -52,7 +52,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('127.0.0.1', 666)  # this stats later will be taken from the list (local_servers())
+    client.connect('10.0.0.9', 666)  # this stats later will be taken from the list (local_servers())
     client.main_conversation()
     client.client_socket.close()
 
