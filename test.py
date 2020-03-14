@@ -1,10 +1,30 @@
 import d3dshot
-from PIL import Image
+from PIL import ImageTk
+
+from share_screen.screen import Window
+
+
+def change(e):
+    image = None
+
+    if image != cam.get_latest_frame():
+        image = cam.get_latest_frame()
+        img = ImageTk.PhotoImage(image)
+        app.label.configure(image=img)
+        app.label.image = img
+
 
 cam = d3dshot.create()
-image = cam.screenshot()
+app = Window()
 
-data = image.tobytes()
-print(image.mode, image.size, len(data))
-new_image = Image.frombytes(image.mode, image.size, data)
-new_image.show()
+
+def main():
+    global cam, app
+    b = d3dshot.create()
+    cam.capture(target_fps=1)
+    app.root.bind("<Motion>", change)
+    app.root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
