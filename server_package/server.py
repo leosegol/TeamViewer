@@ -57,6 +57,7 @@ class Server:
                         if my_client.start_hosting():
                             my_client.send("ok")
                             session(my_client)
+                        my_client.send("something went wrong")
                     elif request == "4":
                         my_client.send(str(my_client.pin))
                     elif request == "5":

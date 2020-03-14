@@ -8,7 +8,6 @@ from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 from share_screen.screen import Window
 
-cam = d3dshot.create()
 app = Window()
 FPS = 24
 CAPTURE_EVERY = 1 / FPS
@@ -56,6 +55,6 @@ class ViewerClient:
         # threading.Thread(target=self.see_screen, args=()).start()
         threading.Thread(target=self.send_mouse_instructions, args=()).start()
         threading.Thread(target=self.send_keyboard_instructions, args=()).start()
-        global cam, app
+        global app
         app.root.bind("<Motion>", self.see_screen)
         app.root.mainloop()
