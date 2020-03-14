@@ -50,8 +50,7 @@ class Socket:
         return False
 
     def can_start_session(self):
-        return self.started_hosting or self.viewer and self.partner and self.partner.viewer \
-               or self.partner.started_hosting
+        return self.partner and self.partner.started_hosting or self.host
 
     def string(self):
         print(self.client_socket, self.partner, self.started_hosting, self.host, self.pin, self.viewer)
