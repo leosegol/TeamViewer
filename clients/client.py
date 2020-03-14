@@ -52,9 +52,8 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('10.0.0.9', 666)  # this stats later will be taken from the list (local_servers())
+    client.connect('10.0.0.3', 666)  # this stats later will be taken from the list (local_servers())
     client.main_conversation()
-    client.client_socket.close()
 
 
 if __name__ == '__main__':

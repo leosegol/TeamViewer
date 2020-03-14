@@ -11,29 +11,33 @@ class HostClient:
 
     def execute_instructions(self):
         pyautogui.FAILSAFE = False
-        data = self.client_socket.recv(1024).decode()
-        data = data.split(",")[0]
-        if "pos" in data:
-            x, y = data.split("pos ")[1].split(" ")
-            pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
-        elif "click" in data:
-            x, y, button = data.split("click ")[1].split(" ")
-            pyautogui.click(int(float(x) * self.display[0]), int(float(y) * self.display[1]),
-                            button=button)
-        elif "scroll" in data:
-            dx, dy = data.split("scroll ")[1].split(" ")
-            pyautogui.scroll(int(dy))
-            pyautogui.hscroll(int(dx))
-        elif "press" in data:
-            key = data.split("press ")[1]
-            pyautogui.press(key)
-        elif "release" in data:
-            key = data.split("release ")[1]
-            pyautogui.keyUp(key)
+        while True:
+            try:
+                data = self.client_socket.recv(1024).decode()
+            except ConnectionResetError:
+                break
+            data = data.split(",")[0]
+            if "pos" in data:
+                x, y = data.split("pos ")[1].split(" ")
+                pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
+            elif "click" in data:
+                x, y, button = data.split("click ")[1].split(" ")
+                pyautogui.click(int(float(x) * self.display[0]), int(float(y) * self.display[1]),
+                                button=button)
+            elif "scroll" in data:
+                dx, dy = data.split("scroll ")[1].split(" ")
+                pyautogui.scroll(int(dy))
+                pyautogui.hscroll(int(dx))
+            elif "press" in data:
+                key = data.split("press ")[1]
+                pyautogui.press(key)
+            elif "release" in data:
+                key = data.split("release ")[1]
+                pyautogui.keyUp(key)
 
     def send_screen(self):
         cam = d3dshot.create()
-        cam.capture(target_fps=24)
+        cam.capture(target_fps=60)
         while True:
             pic = cam.get_latest_frame()
             if pic:
@@ -43,5 +47,4 @@ class HostClient:
 
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()
-        while True:
-            self.execute_instructions()
+        self.execute_instructions()
