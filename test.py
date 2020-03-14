@@ -1,9 +1,29 @@
 import d3dshot
-from PIL import Image
+from PIL import ImageTk
 
-boolean = True
-bo = False
+from share_screen.screen import Window
 
-bobo = boolean or bo
 
-print(bobo)
+def change(e):
+    image = None
+
+    if image != cam.get_latest_frame():
+        image = cam.get_latest_frame()
+        img = ImageTk.PhotoImage(image)
+        app.label.configure(image=img)
+        app.label.image = img
+
+
+cam = d3dshot.create()
+app = Window()
+
+
+def main():
+    global cam, app
+    cam.capture(target_fps=1)
+    app.root.bind("<Motion>", change)
+    app.root.mainloop()
+
+
+if __name__ == '__main__':
+    main()

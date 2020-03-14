@@ -1,39 +1,45 @@
 import threading
 
+import d3dshot
 import pynput
-from PIL import Image
-import matplotlib.pyplot as plt
+from PIL import Image, ImageTk
 
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
+from share_screen.screen import Window
+
+cam = d3dshot.create()
+app = Window()
+FPS = 24
+CAPTURE_EVERY = 1 / FPS
 
 
 class ViewerClient:
     def __init__(self, client_socket):
         self.client_socket = client_socket
 
-    def see_screen(self):
+    def see_screen(self, e):
+        total_data = b''
+        settings = self.client_socket.recv(1024).decode()
+        mode, length, x, y = settings.split(", ")
+        y, data = y.split(")")
+        size = int(x[1:-1]), int(y[1:-1])
+        length = int(length[1:-1])
+        mode = mode[2:-1]
+        if data:
+            length -= len(data.encode())
+            total_data += data.encode()
+        while length > 0:
+            data = self.client_socket.recv(length)
+            length -= len(data)
+            total_data += data
+        if length < 0:
+            total_data = total_data[:length]
+        image = Image.frombytes(mode, size, total_data)
 
-        while True:
-            total_data = b''
-            settings = self.client_socket.recv(1024).decode()
-            print(settings)
-            mode, length, x, y = settings.split(", ")
-            y, data = y.split(")")
-            size = int(x[1:-1]), int(y[1:-1])
-            length = int(length[1:-1])
-            mode = mode[2:-1]
-            if data:
-                length -= len(data.encode())
-                total_data += data.encode()
-            while length > 0:
-                data = self.client_socket.recv(length)
-                length -= len(data)
-                total_data += data
-            if length < 0:
-                total_data = total_data[:length]
-            image = Image.frombytes(mode, size, total_data)
-            image.show()
+        img = ImageTk.PhotoImage(image)
+        app.label.configure(image=img)
+        app.label.image = img
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.client_socket)
@@ -47,6 +53,9 @@ class ViewerClient:
             keyboard_listener.join()
 
     def viewer_mode(self):
-        threading.Thread(target=self.see_screen, args=()).start()
+        # threading.Thread(target=self.see_screen, args=()).start()
         threading.Thread(target=self.send_mouse_instructions, args=()).start()
         threading.Thread(target=self.send_keyboard_instructions, args=()).start()
+        global cam, app
+        app.root.bind("<Motion>", self.see_screen)
+        app.root.mainloop()
