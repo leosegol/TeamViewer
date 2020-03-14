@@ -20,6 +20,7 @@ app = Window()
 
 def main():
     global cam, app
+    b = d3dshot.create()
     cam.capture(target_fps=1)
     app.root.bind("<Motion>", change)
     app.root.mainloop()

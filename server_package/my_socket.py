@@ -32,7 +32,7 @@ class Socket:
     def start_hosting(self):
         if self.host and self.partner:
             self.started_hosting = True
-        return self.start_hosting
+        return self.started_hosting
 
     def exit(self):
         if self.partner:
