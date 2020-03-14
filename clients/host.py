@@ -37,7 +37,7 @@ class HostClient:
 
     def send_screen(self):
         cam = d3dshot.create()
-        cam.capture(target_fps=60)
+        cam.capture(target_fps=24)
         while True:
             pic = cam.get_latest_frame()
             if pic:
