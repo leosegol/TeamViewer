@@ -1,9 +1,4 @@
-from time import time
-
-import d3dshot
-from PIL import ImageTk
-
-from share_screen.screen import Window
+import pygame
 
 
 def create_gui(window):
@@ -15,11 +10,18 @@ def create_gui(window):
     window.create_textbox("connect ")
 
 
-
 def main():
-    app = Window()
-    create_gui(app)
-    app.root.mainloop()
+    pygame.init()
+    image = pygame.image.load(r"C:\Users\Leo\Pictures\dissss.PNG")
+    display_surface = pygame.display.set_mode(image.get_size())
+    clicked = False
+    while not clicked:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                clicked = True
+        if not clicked:
+            display_surface.blit(image, (0, 0))
 
 
 if __name__ == '__main__':

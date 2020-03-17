@@ -30,8 +30,6 @@ class Client:
         self.client_socket.connect((ip, port))
 
     def main_conversation(self):
-        window = Window()
-        create_gui(window)
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')

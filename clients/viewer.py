@@ -1,6 +1,5 @@
 import threading
-
-import d3dshot
+import pygame
 import pynput
 from PIL import Image, ImageTk
 
@@ -10,14 +9,14 @@ from share_screen.screen import Window
 
 app = Window()
 FPS = 24
-CAPTURE_EVERY = 1 / FPS
+CAPTURE_EVERY = int(1000 / FPS)
 
 
 class ViewerClient:
     def __init__(self, client_socket):
         self.client_socket = client_socket
 
-    def see_screen(self, e):
+    def see_screen(self):
         total_data = b''
         settings = self.client_socket.recv(1024).decode()
         mode, length, x, y = settings.split(", ")
