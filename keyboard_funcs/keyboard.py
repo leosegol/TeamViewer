@@ -1,3 +1,4 @@
+
 class Keyboard:
 
     def __init__(self, client_socket):
@@ -8,11 +9,17 @@ class Keyboard:
             key = str(key).split(".")[1]
         else:
             key = str(key)[1:-1]
-        self.client_socket.send(f"press {key},".encode())
+        try:
+            self.client_socket.send(f"press {key},".encode())
+        except ConnectionResetError:
+            return False
 
     def on_release(self, key):
         if "." in str(key):
             key = str(key).split(".")[1]
         else:
             key = str(key)[1:-1]
-        self.client_socket.send(f"release {key},".encode())
+        try:
+            self.client_socket.send(f"release {key},".encode())
+        except ConnectionResetError:
+            return False

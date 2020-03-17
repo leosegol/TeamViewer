@@ -2,6 +2,7 @@ import socket
 
 from clients.host import HostClient
 from clients.viewer import ViewerClient
+from share_screen.screen import Window
 
 MAIN_MENU = """
  1) become a host
@@ -13,6 +14,14 @@ MAIN_MENU = """
  """
 
 
+def create_gui(window):
+    window.create_button("become a host")
+    window.create_button("stop hosting")
+    window.create_button("start hosting")
+    window.create_button("my pass")
+    window.create_button("exit")
+
+
 class Client:
     def __init__(self):
         self.client_socket = socket.socket()
@@ -21,6 +30,8 @@ class Client:
         self.client_socket.connect((ip, port))
 
     def main_conversation(self):
+        window = Window()
+        create_gui(window)
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')

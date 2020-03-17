@@ -21,16 +21,17 @@ class Mouse:
         try:
             self.client_socket.send(f"pos {x / self.display[0]} {y / self.display[1]},".encode())
         except OSError:
-            pass
+            return False
 
     def on_click(self, x, y, button, pressed):
         try:
-            self.client_socket.send(f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
+            if pressed:
+                self.client_socket.send(f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
         except OSError:
-            pass
+            return False
 
     def on_scroll(self, x, y, dx, dy):
         try:
             self.client_socket.send(f"scroll {dx} {dy},".encode())
         except OSError:
-            pass
+            return False

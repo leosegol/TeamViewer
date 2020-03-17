@@ -53,8 +53,13 @@ class ViewerClient:
 
     def viewer_mode(self):
         # threading.Thread(target=self.see_screen, args=()).start()
-        threading.Thread(target=self.send_mouse_instructions, args=()).start()
-        threading.Thread(target=self.send_keyboard_instructions, args=()).start()
+        mouse = threading.Thread(target=self.send_mouse_instructions, args=())
+        keyboard = threading.Thread(target=self.send_keyboard_instructions, args=())
+        mouse.start()
+        keyboard.start()
         global app
+        """app.root.bind("<Motion>", self.see_screen)
         app.root.bind("<Motion>", self.see_screen)
+        app.root.bind("<Motion>", self.see_screen)"""
+        app.root.after(CAPTURE_EVERY, self.see_screen)
         app.root.mainloop()
