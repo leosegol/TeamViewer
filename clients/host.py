@@ -42,8 +42,9 @@ class HostClient:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()
-                self.client_socket.send(str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
+                self.client_socket.sendall(str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
                 self.client_socket.sendall(data)
+                print("here")
 
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()
