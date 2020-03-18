@@ -1,7 +1,7 @@
 import threading
+import os
 import pygame
 import pynput
-from PIL import Image, ImageTk
 
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
@@ -17,27 +17,37 @@ class ViewerClient:
         self.client_socket = client_socket
 
     def see_screen(self):
-        total_data = b''
-        settings = self.client_socket.recv(1024).decode()
-        mode, length, x, y = settings.split(", ")
-        y, data = y.split(")")
-        size = int(x[1:-1]), int(y[1:-1])
-        length = int(length[1:-1])
-        mode = mode[2:-1]
-        if data:
-            length -= len(data.encode())
-            total_data += data.encode()
-        while length > 0:
-            data = self.client_socket.recv(length)
-            length -= len(data)
-            total_data += data
-        if length < 0:
-            total_data = total_data[:length]
-        image = Image.frombytes(mode, size, total_data)
-
-        img = ImageTk.PhotoImage(image)
-        app.label.configure(image=img)
-        app.label.image = img
+        clicked = False
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        pygame.init()
+        while True:
+            total_data = b''
+            settings = self.client_socket.recv(1024)
+            mode, length, x, y = settings.split(b", ")
+            y, data = y.split(b")")
+            size = int(x[1:-1].decode()), int(y[1:-1].decode())
+            length = int(length[1:-1].decode())
+            mode = mode[2:-1].decode()
+            print(mode, length, size)
+            if data:
+                length -= len(data)
+                total_data += data
+            while length > 0:
+                data = self.client_socket.recv(length)
+                length -= len(data)
+                print(length)
+                total_data += data
+            if length < 0:
+                total_data = total_data[:length]
+            image = pygame.image.fromstring(total_data, size, mode)
+            display_surface = pygame.display.set_mode(image.get_size())
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    clicked = True
+            if not clicked:
+                display_surface.blit(image, (0, 0))
+                pygame.display.update()
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.client_socket)
@@ -56,9 +66,11 @@ class ViewerClient:
         keyboard = threading.Thread(target=self.send_keyboard_instructions, args=())
         mouse.start()
         keyboard.start()
-        global app
-        """app.root.bind("<Motion>", self.see_screen)
+        self.see_screen()
+
+        """ global app
+        '''app.root.bind("<Motion>", self.see_screen)
         app.root.bind("<Motion>", self.see_screen)
-        app.root.bind("<Motion>", self.see_screen)"""
+        app.root.bind("<Motion>", self.see_screen)'''
         app.root.after(CAPTURE_EVERY, self.see_screen)
-        app.root.mainloop()
+        app.root.mainloop()"""
