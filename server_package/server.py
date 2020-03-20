@@ -8,7 +8,7 @@ def session(my_client):
     while True:
         if my_client.can_start_session():
             data = my_client.recv(40960000)
-            my_client.partner.send(data)
+            my_client.partner.sendall(data)
 
 
 class Server:

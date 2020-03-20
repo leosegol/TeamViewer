@@ -45,7 +45,7 @@ class ViewerClient:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     clicked = True
-            if not clicked:
+            if not clicked: #asd
                 display_surface.blit(image, (0, 0))
                 pygame.display.update()
 
