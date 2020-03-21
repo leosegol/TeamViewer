@@ -7,7 +7,6 @@ from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 from share_screen.screen import Window
 
-app = Window()
 FPS = 24
 CAPTURE_EVERY = int(1000 / FPS)
 
@@ -18,8 +17,8 @@ class ViewerClient:
 
     def see_screen(self):
         clicked = False
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
-        pygame.init()
+        #os.environ['SDL_VIDEO_CENTERED'] = '1'
+        #pygame.init()
         while True:
             total_data = b''
             settings = self.client_socket.recv(1024)
@@ -28,26 +27,27 @@ class ViewerClient:
             size = int(x[1:-1].decode()), int(y[1:-1].decode())
             length = int(length[1:-1].decode())
             mode = mode[2:-1].decode()
-            print(mode, length, size)
             if data:
                 length -= len(data)
                 total_data += data
             while length > 0:
                 data = self.client_socket.recv(length)
                 length -= len(data)
-                print(length)
                 total_data += data
+                print(length)
             if length < 0:
                 total_data = total_data[:length]
-            image = pygame.image.fromstring(total_data, size, mode)
-            display_surface = pygame.display.set_mode(image.get_size())
-            for event in pygame.event.get():
+            #image = pygame.image.fromstring(total_data, size, mode)
+            #display_surface = pygame.display.set_mode(image.get_size())
+            """for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     clicked = True
+                    """
             if not clicked:
-                display_surface.blit(image, (0, 0))
-                pygame.display.update()
+                #display_surface.blit(image, (0, 0))
+                #pygame.display.update()
+                pass
             else:
                 break
 

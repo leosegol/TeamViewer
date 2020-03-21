@@ -61,7 +61,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('10.0.0.8', 666)  # this stats later will be taken from the list (local_servers())
+    client.connect('127.0.0.1', 666)  # this stats later will be taken from the list (local_servers())
     client.main_conversation()
 
 
