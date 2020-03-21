@@ -11,7 +11,7 @@ class Socket:
     def send(self, data):
         if type(data) != bytes:
             data = data.encode()
-        self.client_socket.send(data)
+        self.client_socket.sendall(data)
 
     def recv(self, size):
         data = self.client_socket.recv(size)
