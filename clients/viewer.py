@@ -17,8 +17,8 @@ class ViewerClient:
 
     def see_screen(self):
         clicked = False
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
-        pygame.init()
+        #os.environ['SDL_VIDEO_CENTERED'] = '1'
+        #pygame.init()
         while True:
             total_data = b''
             settings = self.client_socket.recv(1024)
@@ -34,17 +34,20 @@ class ViewerClient:
                 data = self.client_socket.recv(length)
                 length -= len(data)
                 total_data += data
+                print(length)
             if length < 0:
                 total_data = total_data[:length]
-            image = pygame.image.fromstring(total_data, size, mode)
-            display_surface = pygame.display.set_mode(image.get_size())
-            for event in pygame.event.get():
+            #image = pygame.image.fromstring(total_data, size, mode)
+            #display_surface = pygame.display.set_mode(image.get_size())
+            """for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     clicked = True
+                    """
             if not clicked:
-                display_surface.blit(image, (0, 0))
-                pygame.display.update()
+                #display_surface.blit(image, (0, 0))
+                #pygame.display.update()
+                pass
             else:
                 break
 

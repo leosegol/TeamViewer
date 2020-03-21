@@ -17,6 +17,7 @@ class HostClient:
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
+            print(data)
             if "pos" in data:
                 x, y = data.split("pos ")[1].split(" ")
                 pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
@@ -24,10 +25,10 @@ class HostClient:
                 x, y, button = data.split("click ")[1].split(" ")
                 pyautogui.mouseDown(x=int(float(x) * self.display[0]), y=int(float(y) * self.display[1]),
                                     button=button)
-            elif "release" in data:
-                x, y, button = data.split("release ")[1].split(" ")
+            elif "release mouse" in data:
+                x, y, button = data.split("release mouse ")[1].split(" ")
                 pyautogui.mouseUp(x=int(float(x) * self.display[0]), y=int(float(y) * self.display[1]),
-                                    button=button)
+                                  button=button)
             elif "scroll" in data:
                 dx, dy = data.split("scroll ")[1].split(" ")
                 pyautogui.scroll(int(dy))

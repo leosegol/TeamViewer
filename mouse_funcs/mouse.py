@@ -30,7 +30,7 @@ class Mouse:
                     f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
             else:
                 self.client_socket.send(
-                    f"release {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
+                    f"release mouse {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
 
         except OSError:
             return False
