@@ -25,6 +25,7 @@ class Mouse:
 
     def on_click(self, x, y, button, pressed):
         try:
+            print(pressed)
             if pressed:
                 self.client_socket.send(
                     f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())

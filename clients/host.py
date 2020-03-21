@@ -17,6 +17,7 @@ class HostClient:
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
+            print(data)
             if "pos" in data:
                 x, y = data.split("pos ")[1].split(" ")
                 pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
