@@ -1,7 +1,8 @@
 class Socket:
 
-    def __init__(self, client_socket):
-        self.client_socket = client_socket
+    def __init__(self, tcp_client_socket, udp_client_address):
+        self.tcp_client_socket = tcp_client_socket
+        self.udp_client_address = udp_client_address
         self.host = False
         self.partner = None
         self.started_hosting = False
@@ -11,11 +12,23 @@ class Socket:
     def send(self, data):
         if type(data) != bytes:
             data = data.encode()
-        self.client_socket.sendall(data)
+        self.tcp_client_socket.send(data)
+        '''
+    def sendall(self, data):
+        if type(data) != bytes:
+            data = data.encode()
+        self.udp_client_socket.sendall(data)
+        '''
 
     def recv(self, size):
-        data = self.client_socket.recv(size)
+        data = self.tcp_client_socket.recv(size)
         return data
+
+        '''
+    def recvall(self, size):
+        data = self.udp_client_socket.recv(size)
+        return data
+        '''
 
     def stop_hosting(self):
         self.partner = None
@@ -38,7 +51,7 @@ class Socket:
         if self.partner:
             self.partner.viewer = False
             self.partner.partner = None
-        self.client_socket.close()
+        self.tcp_client_socket.close()
 
     def connect(self, host_client, pin):
         if not self.host:
@@ -53,4 +66,5 @@ class Socket:
         return self.partner and self.partner.started_hosting or self.host
 
     def string(self):
-        print(self.client_socket, self.partner, self.started_hosting, self.host, self.pin, self.viewer)
+        print(self.udp_client_socket, self.tcp_client_socket, self.partner, self.started_hosting, self.host, self.pin,
+              self.viewer)

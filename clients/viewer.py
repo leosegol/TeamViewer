@@ -12,16 +12,18 @@ CAPTURE_EVERY = int(1000 / FPS)
 
 
 class ViewerClient:
-    def __init__(self, client_socket):
+    def __init__(self, client_socket, udp_addr):
         self.client_socket = client_socket
+        self.udp_addr = udp_addr
 
     def see_screen(self):
         clicked = False
-        #os.environ['SDL_VIDEO_CENTERED'] = '1'
-        #pygame.init()
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        pygame.init()
         while True:
             total_data = b''
-            settings = self.client_socket.recv(1024)
+            settings, addr = self.client_socket.recvfrom(1024)
+            #settings = settings.decode()
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
             size = int(x[1:-1].decode()), int(y[1:-1].decode())
@@ -31,34 +33,35 @@ class ViewerClient:
                 length -= len(data)
                 total_data += data
             while length > 0:
-                data = self.client_socket.recv(length)
+                data, addr = self.client_socket.recvfrom(length)
                 length -= len(data)
                 total_data += data
                 print(length)
             if length < 0:
                 total_data = total_data[:length]
-            #image = pygame.image.fromstring(total_data, size, mode)
-            #display_surface = pygame.display.set_mode(image.get_size())
-            """for event in pygame.event.get():
+            image = pygame.image.fromstring(total_data, size, mode)
+            display_surface = pygame.display.set_mode(image.get_size())
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     clicked = True
-                    """
+                    self.client_socket.sendto("exit", self.udp_addr)
+
             if not clicked:
-                #display_surface.blit(image, (0, 0))
-                #pygame.display.update()
+                display_surface.blit(image, (0, 0))
+                pygame.display.update()
                 pass
             else:
                 break
 
     def send_mouse_instructions(self):
-        mouse = Mouse(self.client_socket)
+        mouse = Mouse(self.client_socket, self.udp_addr)
         with pynput.mouse.Listener(on_move=mouse.on_move, on_click=mouse.on_click,
                                    on_scroll=mouse.on_scroll) as mouse_listener:
             mouse_listener.join()
 
     def send_keyboard_instructions(self):
-        keyboard = Keyboard(self.client_socket)
+        keyboard = Keyboard(self.client_socket, self.udp_addr)
         with pynput.keyboard.Listener(on_press=keyboard.on_press, on_release=keyboard.on_release) as keyboard_listener:
             keyboard_listener.join()
 
