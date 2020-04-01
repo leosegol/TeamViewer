@@ -14,7 +14,7 @@ class HostClient:
         pyautogui.FAILSAFE = False
         while True:
             try:
-                data, addr = self.client_socket.recvfrom(1024)
+                data, addr = self.client_socket.recvfrom(65507)
                 data = data.decode()
             except ConnectionResetError:
                 break

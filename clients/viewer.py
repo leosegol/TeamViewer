@@ -22,7 +22,7 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings, addr = self.client_socket.recvfrom(1024)
+            settings, addr = self.client_socket.recvfrom(65507)
             #settings = settings.decode()
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
@@ -33,7 +33,7 @@ class ViewerClient:
                 length -= len(data)
                 total_data += data
             while length > 0:
-                data, addr = self.client_socket.recvfrom(length)
+                data, addr = self.client_socket.recvfrom(65507)
                 length -= len(data)
                 total_data += data
                 print(length)
