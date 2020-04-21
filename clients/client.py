@@ -24,30 +24,26 @@ def create_gui(window):
 
 class Client:
     def __init__(self):
-        self.tcp_client_socket = socket.socket()
-        self.udp_client_socket = socket.socket()
-        self.udp_client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.udp_addr = ()
+        self.client_socket = socket.socket()
 
-    def connect(self, ip, tcp_port, udp_port, udp_connection):
-        self.tcp_client_socket.connect((ip, tcp_port))
-        self.udp_addr = (ip, udp_port)
-        self.udp_client_socket.sendto("connect".encode(), (ip, udp_connection))
+    def connect(self, ip, port):
+        self.client_socket.connect((ip, port))
 
     def main_conversation(self):
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')
-            self.tcp_client_socket.send(f"instruction {opt},".encode())
+            self.client_socket.send(f"instruction {opt},".encode())
             if opt == '1':
-                print(f"Your pass: {self.tcp_client_socket.recv(1024).decode()}")
+                print(f"Your pass: {self.client_socket.recv(1024).decode()}")
             elif opt == '3':
-                response = self.tcp_client_socket.recv(1024).decode()
+                response = self.client_socket.recv(1024).decode()
                 print(response)
                 if "ok" in response:
-                    HostClient(self.udp_client_socket, self.udp_addr).host_mode()
+                    HostClient(self.client_socket).host_mode()
+                    self.client_socket.send("stop Share".encode())
             elif opt == '4':
-                password = self.tcp_client_socket.recv(1024).decode()
+                password = self.client_socket.recv(1024).decode()
                 if password != "-1":
                     print(f"Your password is {password}")
                 else:
@@ -55,10 +51,10 @@ class Client:
             elif opt == '5':
                 break
             elif 'connect' in opt:
-                response = self.tcp_client_socket.recv(1024).decode()
+                response = self.client_socket.recv(1024).decode()
                 if response == 'ok':
                     print("Wait for host to start the conversation")
-                    ViewerClient(self.udp_client_socket, self.udp_addr).viewer_mode()
+                    ViewerClient(self.client_socket).viewer_mode()
                 else:
                     print(response)
             input('press any key to continue...')
@@ -66,7 +62,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('127.0.0.1', 666, 420 ,69)  # this stats later will be taken from the list (local_servers())
+    client.connect('127.0.0.1', 666)  # this stats later will be taken from the list (local_servers())
     client.main_conversation()
 
 

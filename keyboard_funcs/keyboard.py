@@ -1,9 +1,8 @@
 
 class Keyboard:
 
-    def __init__(self, client_socket, udp_addr):
+    def __init__(self, client_socket):
         self.client_socket = client_socket
-        self.udp_addr = udp_addr
 
     def on_press(self, key):
         if "." in str(key):
@@ -11,7 +10,7 @@ class Keyboard:
         else:
             key = str(key)[1:-1]
         try:
-            self.client_socket.sendto(f"press {key},".encode(), self.udp_addr)
+            self.client_socket.send(f"press {key},".encode())
         except ConnectionResetError:
             return False
 
@@ -21,6 +20,6 @@ class Keyboard:
         else:
             key = str(key)[1:-1]
         try:
-            self.client_socket.sendto(f"release {key},".encode(), self.udp_addr)
+            self.client_socket.send(f"release {key},".encode())
         except ConnectionResetError:
             return False

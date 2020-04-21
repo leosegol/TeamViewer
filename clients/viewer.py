@@ -12,9 +12,8 @@ CAPTURE_EVERY = int(1000 / FPS)
 
 
 class ViewerClient:
-    def __init__(self, client_socket, udp_addr):
+    def __init__(self, client_socket):
         self.client_socket = client_socket
-        self.udp_addr = udp_addr
 
     def see_screen(self):
         clicked = False
@@ -22,8 +21,10 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings, addr = self.client_socket.recvfrom(65507)
-            #settings = settings.decode()
+            settings = self.client_socket.recv(1024)
+            if b"stop Share" in settings:
+                pygame.quit()
+                break
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
             size = int(x[1:-1].decode()), int(y[1:-1].decode())
@@ -33,7 +34,7 @@ class ViewerClient:
                 length -= len(data)
                 total_data += data
             while length > 0:
-                data, addr = self.client_socket.recvfrom(65507)
+                data = self.client_socket.recv(length)
                 length -= len(data)
                 total_data += data
                 print(length)
@@ -45,7 +46,6 @@ class ViewerClient:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     clicked = True
-                    self.client_socket.sendto("exit", self.udp_addr)
 
             if not clicked:
                 display_surface.blit(image, (0, 0))
@@ -55,13 +55,13 @@ class ViewerClient:
                 break
 
     def send_mouse_instructions(self):
-        mouse = Mouse(self.client_socket, self.udp_addr)
+        mouse = Mouse(self.client_socket)
         with pynput.mouse.Listener(on_move=mouse.on_move, on_click=mouse.on_click,
                                    on_scroll=mouse.on_scroll) as mouse_listener:
             mouse_listener.join()
 
     def send_keyboard_instructions(self):
-        keyboard = Keyboard(self.client_socket, self.udp_addr)
+        keyboard = Keyboard(self.client_socket)
         with pynput.keyboard.Listener(on_press=keyboard.on_press, on_release=keyboard.on_release) as keyboard_listener:
             keyboard_listener.join()
 
