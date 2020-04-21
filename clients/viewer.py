@@ -2,7 +2,7 @@ import threading
 import os
 import pygame
 import pynput
-
+import json
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 from share_screen.screen import Window
@@ -21,15 +21,9 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings = self.client_socket.recv(1024)
-            if b"stop Share" in settings:
-                pygame.quit()
-                break
-            mode, length, x, y = settings.split(b", ")
-            y, data = y.split(b")")
-            size = int(x[1:-1].decode()), int(y[1:-1].decode())
-            length = int(length[1:-1].decode())
-            mode = mode[2:-1].decode()
+            settings = json.loads(self.client_socket.recv(1024))
+            print(settings)
+            mode, length, size, data = settings
             if data:
                 length -= len(data)
                 total_data += data
