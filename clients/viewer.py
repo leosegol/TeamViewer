@@ -21,7 +21,7 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings = json.loads(self.client_socket.recv(1024))
+            settings = eval(self.client_socket.recv(1024).decode())
             print(settings)
             mode, length, size, data = settings
             if data:
