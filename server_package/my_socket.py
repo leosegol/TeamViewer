@@ -1,3 +1,7 @@
+from protocols.my_protocol import send as my_send
+from protocols.my_protocol import receive as my_receive
+
+
 class Socket:
 
     def __init__(self, client_socket):
@@ -12,10 +16,10 @@ class Socket:
     def send(self, data):
         if type(data) != bytes:
             data = data.encode()
-        self.client_socket.sendall(data)
+        my_send(self.client_socket, data)
 
-    def recv(self, size):
-        data = self.client_socket.recv(size)
+    def recv(self):
+        data = my_receive(self.client_socket)
         return data
 
     def stop_hosting(self):

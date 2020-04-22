@@ -2,7 +2,8 @@ import threading
 
 import d3dshot
 import pyautogui
-import json
+from protocols.my_protocol import send as my_send
+from protocols.my_protocol import receive as my_receive
 
 class HostClient:
     def __init__(self, client_socket):
@@ -13,11 +14,10 @@ class HostClient:
         pyautogui.FAILSAFE = False
         while True:
             try:
-                data = self.client_socket.recv(1024).decode()
+                data = my_receive(self.client_socket).decode()
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
-            print(data)
             if "pos" in data:
                 x, y = data.split("pos ")[1].split(" ")
                 pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
@@ -52,7 +52,10 @@ class HostClient:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()
-                self.client_socket.send(str((pic.mode, len(data), pic.size, data)).encode())
+                my_send(self.client_socket, str((pic.mode, pic.size)).encode())
+                my_send(self.client_socket, data)
+
+                
 
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()

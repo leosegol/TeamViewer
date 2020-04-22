@@ -2,24 +2,23 @@ import random
 import socket
 import threading
 
+
 from server_package import my_socket
 
 
 def session(my_client):
     while True:
-        if my_client.finished_session:
-            break
         if my_client.can_start_session():
             try:
-                data = my_client.recv(40960000)
+                """
+                data = my_receive(my_client.client_socket)
+                print(data)
+                my_send(my_client.client_socket, data)
+                """
+                data = my_client.recv()
                 my_client.partner.send(data)
             except AttributeError:
                 break
-            if b"stop Share" in data:
-                my_client.partner.stop_hosting()
-                my_client.partner.finished_session = True
-                my_client.stop_viewing()
-                my_client.finished_session = True
 
 
 class Server:
@@ -55,7 +54,8 @@ class Server:
     def main_conversation(self, my_client):
         try:
             while True:
-                request = my_client.recv(1024).decode()
+                request = my_client.recv().decode()
+                print(request)
                 if "instruction " in request:
                     request = request.split("instruction ")[1].split(",")[0]
                     if request == "1":

@@ -1,3 +1,5 @@
+from protocols.my_protocol import send as my_send
+
 
 class Keyboard:
 
@@ -10,7 +12,7 @@ class Keyboard:
         else:
             key = str(key)[1:-1]
         try:
-            self.client_socket.send(f"press {key},".encode())
+            my_send(self.client_socket, f"press {key},".encode())
         except ConnectionResetError:
             return False
 
@@ -20,6 +22,6 @@ class Keyboard:
         else:
             key = str(key)[1:-1]
         try:
-            self.client_socket.send(f"release {key},".encode())
+            my_send(self.client_socket, f"release {key},".encode())
         except ConnectionResetError:
             return False

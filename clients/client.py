@@ -2,7 +2,8 @@ import socket
 
 from clients.host import HostClient
 from clients.viewer import ViewerClient
-from share_screen.screen import Window
+from protocols.my_protocol import send as my_send
+from protocols.my_protocol import receive as my_receive
 
 MAIN_MENU = """
  1) become a host
@@ -12,14 +13,6 @@ MAIN_MENU = """
  5) exit
  commands: |connect <password>|
  """
-
-
-def create_gui(window):
-    window.create_button("become a host")
-    window.create_button("stop hosting")
-    window.create_button("start hosting")
-    window.create_button("my pass")
-    window.create_button("exit")
 
 
 class Client:
@@ -33,17 +26,17 @@ class Client:
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')
-            self.client_socket.send(f"instruction {opt},".encode())
+            my_send(self.client_socket, f"instruction {opt},".encode())
             if opt == '1':
-                print(f"Your pass: {self.client_socket.recv(1024).decode()}")
+                print(f"Your pass: {my_receive(self.client_socket).decode()}")
             elif opt == '3':
-                response = self.client_socket.recv(1024).decode()
+                response = my_receive(self.client_socket).decode()
                 print(response)
                 if "ok" in response:
                     HostClient(self.client_socket).host_mode()
-                    self.client_socket.send("stop Share".encode())
+                    my_send(self.client_socket, "stop Share".encode())
             elif opt == '4':
-                password = self.client_socket.recv(1024).decode()
+                password = my_receive(self.client_socket).decode()
                 if password != "-1":
                     print(f"Your password is {password}")
                 else:
@@ -51,7 +44,7 @@ class Client:
             elif opt == '5':
                 break
             elif 'connect' in opt:
-                response = self.client_socket.recv(1024).decode()
+                response = my_receive(self.client_socket).decode()
                 if response == 'ok':
                     print("Wait for host to start the conversation")
                     ViewerClient(self.client_socket).viewer_mode()

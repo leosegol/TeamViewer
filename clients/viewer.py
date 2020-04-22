@@ -5,7 +5,8 @@ import pynput
 import json
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
-from share_screen.screen import Window
+from protocols.my_protocol import send as my_send
+from protocols.my_protocol import receive as my_receive
 
 FPS = 24
 CAPTURE_EVERY = int(1000 / FPS)
@@ -21,32 +22,21 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings = eval(self.client_socket.recv(1024).decode())
+            settings = eval(my_receive(self.client_socket).decode())
             print(settings)
-            mode, length, size, data = settings
-            if data:
-                length -= len(data)
-                total_data += data
-            while length > 0:
-                data = self.client_socket.recv(length)
-                length -= len(data)
-                total_data += data
-                print(length)
-            if length < 0:
-                total_data = total_data[:length]
+            mode, size = settings
+            total_data = my_receive(self.client_socket)
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    clicked = True
-
-            if not clicked:
+                    break
+            else:
                 display_surface.blit(image, (0, 0))
                 pygame.display.update()
-                pass
-            else:
-                break
+                continue
+            break
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.client_socket)
