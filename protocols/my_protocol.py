@@ -5,7 +5,7 @@ MSG_LENGTH = 7
 
 def send(client_socket, msg):
     length = (str(len(msg)).zfill(MSG_LENGTH).encode())
-    client_socket.send(length + msg)
+    client_socket.sendall(length + msg)
 
 
 def receive(client_socket):

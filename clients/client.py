@@ -22,18 +22,18 @@ class Client:
     def connect(self, ip, port):
         self.client_socket.connect((ip, port))
 
-    def main_conversation(self):
+    def main_conversation(self, recv_client):
         while True:
             print('\n\n\n', MAIN_MENU)
             opt = input('choose an option: ')
-            my_send(self.client_socket, f"instruction {opt},".encode())
+            my_send(self.client_socket, opt.encode())
             if opt == '1':
                 print(f"Your pass: {my_receive(self.client_socket).decode()}")
             elif opt == '3':
                 response = my_receive(self.client_socket).decode()
                 print(response)
                 if "ok" in response:
-                    HostClient(self.client_socket).host_mode()
+                    HostClient(self.client_socket, recv_client.client_socket).host_mode()
                     my_send(self.client_socket, "stop Share".encode())
             elif opt == '4':
                 password = my_receive(self.client_socket).decode()
@@ -47,7 +47,7 @@ class Client:
                 response = my_receive(self.client_socket).decode()
                 if response == 'ok':
                     print("Wait for host to start the conversation")
-                    ViewerClient(self.client_socket).viewer_mode()
+                    ViewerClient(self.client_socket, recv_client.client_socket).viewer_mode()
                 else:
                     print(response)
             input('press any key to continue...')
@@ -55,8 +55,10 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('127.0.0.1', 666)  # this stats later will be taken from the list (local_servers())
-    client.main_conversation()
+    recv_client = Client()
+    client.connect('127.0.0.1', 666)
+    recv_client.connect('127.0.0.1', 667)
+    client.main_conversation(recv_client)
 
 
 if __name__ == '__main__':

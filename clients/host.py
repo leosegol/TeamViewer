@@ -6,15 +6,16 @@ from protocols.my_protocol import send as my_send
 from protocols.my_protocol import receive as my_receive
 
 class HostClient:
-    def __init__(self, client_socket):
-        self.client_socket = client_socket
+    def __init__(self, send_socket, recv_socket):
+        self.send_socket = send_socket
+        self.recv_socket = recv_socket
         self.display = pyautogui.size()
 
     def execute_instructions(self):
         pyautogui.FAILSAFE = False
         while True:
             try:
-                data = my_receive(self.client_socket).decode()
+                data = my_receive(self.recv_socket).decode()
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
@@ -43,8 +44,6 @@ class HostClient:
                 key = data.split("release ")[1]
                 pyautogui.keyUp(key)
 
-
-
     def send_screen(self):
         cam = d3dshot.create()
         cam.capture(target_fps=24)
@@ -52,8 +51,9 @@ class HostClient:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()
-                my_send(self.client_socket, str((pic.mode, pic.size)).encode())
-                my_send(self.client_socket, data)
+                my_send(self.send_socket, str((pic.mode, pic.size)).encode())
+                my_send(self.send_socket, data)
+                print("Host", data)
 
                 
 
