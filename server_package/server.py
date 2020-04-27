@@ -5,27 +5,34 @@ import threading
 from server_package import my_socket
 
 
-def session(client_recv, client_send):
+def session(client):
     while True:
-        if client_recv.can_start_session():
+        if client.can_start_session():
             try:
-                data = client_recv.recv()
-                client_send.partner.send(data)
+                data = client.recv()
+                client.partner.send(data)
             except AttributeError:
                 break
 
 
 class Server:
-    def __init__(self, ip, port):
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind((ip, port))
-        self.server.listen(1)
+    def __init__(self, ip, port1, port2):
+        self.server1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server1.bind((ip, port1))
+        self.server1.listen(1)
+
+        self.server2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server2.bind((ip, port2))
+        self.server2.listen(1)
+
         self.clients = []
 
     def accept(self):
-        client_socket, client_address = self.server.accept()
-        my_client = my_socket.Socket(client_socket)
+        client_send, client_address = self.server1.accept()
+        client_recv, client_address = self.server2.accept()
+        my_client = my_socket.Socket(client_send, client_recv)
         self.clients.append(my_client)
         return my_client
 
@@ -45,7 +52,7 @@ class Server:
                 return "ok"
         return "something went wrong"
 
-    def main_conversation(self, my_client, my_send_client):
+    def main_conversation(self, my_client):
         try:
             while True:
                 request = my_client.recv()
@@ -61,7 +68,7 @@ class Server:
                     if my_client.start_hosting():
                         print("yaaas")
                         my_client.send("ok")
-                        session(my_client, my_send_client)
+                        session(my_client)
                         print("oh noew")
                         continue
                     my_client.send("something went wrong")
@@ -75,8 +82,7 @@ class Server:
                     response = self.connect(int(request.split(" ")[1]), my_client)
                     my_client.send(response)
                     if response == "ok":
-                        session(my_client, my_send_client)
-                        print("oh noewwwww")
+                        session(my_client)
         except ConnectionError:
             self.clients.remove(my_client)
             my_client.exit()
@@ -93,14 +99,12 @@ commands: |connect <password>|
 
 
 def main():
-    server_recv = Server("0.0.0.0", 666)
-    server_send = Server("0.0.0.0", 667)
+    server = Server("0.0.0.0", 667, 666)
     print('server started')
     print(socket.gethostbyname(socket.gethostname()))
     while True:
-        client_send = server_send.accept()
-        client_recv = server_recv.accept()
-        threading.Thread(target=server_recv.main_conversation, args=(client_recv, client_send)).start()
+        client = server.accept()
+        threading.Thread(target=server.main_conversation, args=(client, )).start()
 
 
 if __name__ == '__main__':

@@ -2,8 +2,10 @@ import threading
 
 import d3dshot
 import pyautogui
-from protocols.my_protocol import send as my_send
+
 from protocols.my_protocol import receive as my_receive
+from protocols.my_protocol import send as my_send
+
 
 class HostClient:
     def __init__(self, send_socket, recv_socket):
@@ -52,8 +54,6 @@ class HostClient:
                 my_send(self.send_socket, str((pic.mode, pic.size)).encode())
                 my_send(self.send_socket, data)
                 print("Host", data)
-
-                
 
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()

@@ -4,8 +4,9 @@ from protocols.my_protocol import receive as my_receive
 
 class Socket:
 
-    def __init__(self, client_socket):
-        self.client_socket = client_socket
+    def __init__(self, client_send, client_recv):
+        self.client_send = client_send
+        self.client_recv = client_recv
         self.host = False
         self.partner = None
         self.started_hosting = False
@@ -16,10 +17,10 @@ class Socket:
     def send(self, data):
         if type(data) != bytes:
             data = data.encode()
-        my_send(self.client_socket, data)
+        my_send(self.client_send, data)
 
     def recv(self):
-        data = my_receive(self.client_socket)
+        data = my_receive(self.client_recv)
         return data
 
     def stop_hosting(self):
