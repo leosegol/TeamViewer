@@ -37,9 +37,7 @@ class HostClient:
             elif "press" in data:
                 key = data.split("press ")[1]
                 pyautogui.keyDown(key)
-                if key == "esc":
-                    pyautogui.keyUp(key)
-                    break
+
             elif "release" in data:
                 key = data.split("release ")[1]
                 pyautogui.keyUp(key)

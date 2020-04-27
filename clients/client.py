@@ -34,7 +34,6 @@ class Client:
                 print(response)
                 if "ok" in response:
                     HostClient(self.client_socket, recv_client.client_socket).host_mode()
-                    my_send(self.client_socket, "stop Share".encode())
             elif opt == '4':
                 password = my_receive(self.client_socket).decode()
                 if password != "-1":

@@ -10,7 +10,6 @@ def session(client_recv, client_send):
         if client_recv.can_start_session():
             try:
                 data = client_recv.recv()
-                print(data)
                 client_send.partner.send(data)
             except AttributeError:
                 break
@@ -49,16 +48,22 @@ class Server:
     def main_conversation(self, my_client, my_send_client):
         try:
             while True:
-                request = my_client.recv().decode()
+                request = my_client.recv()
+                print("main", request)
+                request = request.decode()
                 if request == "1":
                     my_client.become_host(self.create_password())
                     my_client.send(str(my_client.pin))
                 elif request == "2":
                     my_client.stop_hosting()
                 elif request == "3":
+                    print("yes")
                     if my_client.start_hosting():
+                        print("yaaas")
                         my_client.send("ok")
                         session(my_client, my_send_client)
+                        print("oh noew")
+                        continue
                     my_client.send("something went wrong")
                 elif request == "4":
                     my_client.send(str(my_client.pin))
@@ -71,6 +76,7 @@ class Server:
                     my_client.send(response)
                     if response == "ok":
                         session(my_client, my_send_client)
+                        print("oh noewwwww")
         except ConnectionError:
             self.clients.remove(my_client)
             my_client.exit()
