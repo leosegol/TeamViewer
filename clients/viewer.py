@@ -21,12 +21,15 @@ class ViewerClient:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
         while True:
-            total_data = b''
             settings = eval(my_receive(self.recv_socket).decode())
             print(settings)
-            mode, size = settings
+            mode, size, data_len = settings
             total_data = my_receive(self.recv_socket)
             print("viewer", total_data)
+            print(len(total_data))
+            while len(total_data) < data_len:
+                total_data += my_receive(self.recv_socket)
+            total_data = total_data[0:data_len]
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())
             for event in pygame.event.get():

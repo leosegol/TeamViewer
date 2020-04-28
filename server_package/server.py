@@ -64,12 +64,9 @@ class Server:
                 elif request == "2":
                     my_client.stop_hosting()
                 elif request == "3":
-                    print("yes")
                     if my_client.start_hosting():
-                        print("yaaas")
                         my_client.send("ok")
                         session(my_client)
-                        print("oh noew")
                         continue
                     my_client.send("something went wrong")
                 elif request == "4":

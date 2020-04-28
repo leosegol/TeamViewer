@@ -48,7 +48,8 @@ class Socket:
         if self.partner:
             self.partner.viewer = False
             self.partner.partner = None
-        self.client_socket.close()
+        self.client_recv.close()
+        self.client_send.close()
 
     def connect(self, host_client, pin):
         if not self.host:
