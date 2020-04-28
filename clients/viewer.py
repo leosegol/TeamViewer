@@ -21,10 +21,17 @@ class ViewerClient:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
         while True:
-            settings = eval(my_receive(self.recv_socket).decode())
+
+            settings = my_receive(self.recv_socket)
             print(settings)
-            mode, size, data_len = settings
-            total_data = my_receive(self.recv_socket)
+            settings = b""
+            c = settings.rsplit(b")")
+            c[0] += b")"
+            c[1] += b")"
+            settings = c[0] + c[1]
+            mode, size, data_len = eval(settings)
+            total_data = c[2]
+            total_data += my_receive(self.recv_socket)
             print("viewer", total_data)
             print(len(total_data))
             while len(total_data) < data_len:
