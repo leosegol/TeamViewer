@@ -33,8 +33,9 @@ class ViewerClient:
             total_data = c[2]
             total_data += my_receive(self.recv_socket)
             print("viewer", total_data)
-            print(len(total_data))
-            while len(total_data) < data_len:
+            print(len(total_data), data_len)
+            while len(total_data) < int(data_len):
+                print("gothere")
                 total_data += my_receive(self.recv_socket)
             total_data = total_data[0:data_len]
             image = pygame.image.fromstring(total_data, size, mode)

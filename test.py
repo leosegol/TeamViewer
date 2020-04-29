@@ -2,18 +2,11 @@ import json
 
 
 def main():
-    a = ('RGB', 6220000, (1920, 1080), 'x1x2x2')
-    print(a)
-    print(type(a))
-    b = str(a)
-    print(b)
-    print(type(b))
-    c = b.encode()
-    d = c.decode()
-    e = eval(d)
-    print(e)
-    print(type(e))
-
+    a = b"('asd', (asd,asd), 1234567)s,hjvshfsdjf;"
+    c = a.rsplit(b")")
+    c[0] += b")"
+    c[1] += b")"
+    d = c[0] + c[1]
 
 
 if __name__ == '__main__':
