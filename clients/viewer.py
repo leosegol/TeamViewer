@@ -21,22 +21,26 @@ class ViewerClient:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
         while True:
-
-            settings = my_receive(self.recv_socket)
-            print(settings)
-            c = settings.rsplit(b")")
-            c[0] += b")"
-            c[1] += b")"
-            settings = c[0] + c[1]
-            mode, size, data_len = eval(settings)
-            total_data = c[2]
-            total_data += my_receive(self.recv_socket)
-            print("viewer", total_data)
-            print(len(total_data), data_len)
-            while len(total_data) < int(data_len):
-                print(len(total_data))
-                total_data += my_receive(self.recv_socket)
-            total_data = total_data[0:data_len]
+            total_data = b''
+            settings = self.recv_socket.recv(1024)
+            if b"stop Share" in settings:
+                pygame.quit()
+                break
+            mode, length, x, y = settings.split(b", ")
+            y, data = y.split(b")")
+            size = int(x[1:-1].decode()), int(y[1:-1].decode())
+            length = int(length[1:-1].decode())
+            mode = mode[2:-1].decode()
+            if data:
+                length -= len(data)
+                total_data += data
+            while length > 0:
+                data = self.recv_socket.recv(length)
+                length -= len(data)
+                total_data += data
+                print(length)
+            if length < 0:
+                total_data = total_data[:length]
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())
             for event in pygame.event.get():
@@ -46,8 +50,6 @@ class ViewerClient:
             else:
                 display_surface.blit(image, (0, 0))
                 pygame.display.update()
-                continue
-            break
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.send_socket)
