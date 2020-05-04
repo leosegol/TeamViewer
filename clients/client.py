@@ -56,7 +56,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('127.0.0.1', 666, 667)
+    client.connect('10.0.0.13', 666, 667)
     client.main_conversation()
 
 
