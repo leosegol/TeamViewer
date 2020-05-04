@@ -1,29 +1,12 @@
-import d3dshot
-from PIL import ImageTk
-
-from share_screen.screen import Window
-
-
-def change(e):
-    image = None
-
-    if image != cam.get_latest_frame():
-        image = cam.get_latest_frame()
-        img = ImageTk.PhotoImage(image)
-        app.label.configure(image=img)
-        app.label.image = img
-
-
-cam = d3dshot.create()
-app = Window()
+import json
 
 
 def main():
-    global cam, app
-    b = d3dshot.create()
-    cam.capture(target_fps=1)
-    app.root.bind("<Motion>", change)
-    app.root.mainloop()
+    a = b"('asd', (asd,asd), 1234567)s,hjvshfsdjf;"
+    c = a.rsplit(b")")
+    c[0] += b")"
+    c[1] += b")"
+    d = c[0] + c[1]
 
 
 if __name__ == '__main__':
