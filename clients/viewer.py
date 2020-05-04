@@ -24,17 +24,19 @@ class ViewerClient:
 
             settings = my_receive(self.recv_socket)
             print(settings)
-            c = settings.rsplit(b")")
-            c[0] += b")"
-            c[1] += b")"[1]
+            #c = settings.rsplit(b")")
+            #print(c[0], "!!!", c[1])
+            #c[0] += b")"
+            #c[1] += b")"[1]
             mode, size, data_len = eval(settings)
-            total_data = c[2]
-            total_data += my_receive(self.recv_socket)
+            #total_data = c[2]
+            total_data = my_receive(self.recv_socket)
             print("viewer", total_data)
             print(len(total_data), data_len)
-            while len(total_data) < int(data_len):
+            """while len(total_data) < int(data_len):
                 print(len(total_data))
                 total_data += my_receive(self.recv_socket)
+                """
             total_data = total_data[0:data_len]
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())
