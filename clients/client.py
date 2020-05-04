@@ -30,14 +30,14 @@ class Client:
             opt = input('choose an option: ')
             my_send(self.client_send, opt.encode())
             if opt == '1':
-                print(f"Your pass: {my_receive(self.client_recv).decode()}")
+                print(f"Your pass: {my_receive(self.client_recv, 1024).decode()}")
             elif opt == '3':
-                response = my_receive(self.client_recv).decode()
+                response = my_receive(self.client_recv, 1024).decode()
                 print(response)
                 if "ok" in response:
                     HostClient(self.client_send, self.client_recv).host_mode()
             elif opt == '4':
-                password = my_receive(self.client_recv).decode()
+                password = my_receive(self.client_recv, 1024).decode()
                 if password != "-1":
                     print(f"Your password is {password}")
                 else:
@@ -45,7 +45,7 @@ class Client:
             elif opt == '5':
                 break
             elif 'connect' in opt:
-                response = my_receive(self.client_recv).decode()
+                response = my_receive(self.client_recv, 1024).decode()
                 if response == 'ok':
                     print("Wait for host to start the conversation")
                     ViewerClient(self.client_send, self.client_recv).viewer_mode()

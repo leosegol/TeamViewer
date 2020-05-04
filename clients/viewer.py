@@ -22,24 +22,23 @@ class ViewerClient:
         pygame.init()
         while True:
             total_data = b''
-            settings = self.recv_socket.recv(1024)
-            if b"stop Share" in settings:
-                pygame.quit()
-                break
+            settings = my_receive(self.recv_socket, 1024)
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
             size = int(x[1:-1].decode()), int(y[1:-1].decode())
             length = int(length[1:-1].decode())
             mode = mode[2:-1].decode()
+            print(size, mode, length)
             if data:
                 length -= len(data)
                 total_data += data
             while length > 0:
-                data = self.recv_socket.recv(length)
+                data = my_receive(self.recv_socket, length)
                 length -= len(data)
                 total_data += data
                 print(length)
             if length < 0:
+                print(total_data[length:])
                 total_data = total_data[:length]
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())

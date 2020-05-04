@@ -17,7 +17,7 @@ class HostClient:
         pyautogui.FAILSAFE = False
         while True:
             try:
-                data = my_receive(self.recv_socket).decode()
+                data = my_receive(self.recv_socket, 1024).decode()
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
@@ -51,7 +51,7 @@ class HostClient:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()
-                my_send(self.send_socket, str((pic.mode, pic.size, len(data))).encode())
+                my_send(self.send_socket, str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
                 my_send(self.send_socket, data)
                 print("Host", data)
                 print(len(data))
