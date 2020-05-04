@@ -26,8 +26,7 @@ class ViewerClient:
             print(settings)
             c = settings.rsplit(b")")
             c[0] += b")"
-            c[1] += b")"
-            settings = c[0] + c[1]
+            c[1] += b")"[1]
             mode, size, data_len = eval(settings)
             total_data = c[2]
             total_data += my_receive(self.recv_socket)

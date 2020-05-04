@@ -4,6 +4,8 @@ MSG_LENGTH = 7
 
 
 def send(client_socket, msg):
+    length = str(len(msg)).zfill(MSG_LENGTH).encode()
+    msg = length + msg
     while msg:
         if len(msg) > 10000:
             client_socket.send(msg[0:10000])
@@ -14,5 +16,6 @@ def send(client_socket, msg):
 
 
 def receive(client_socket):
-    msg = client_socket.recv(6220800)
+    length = client_socket.recv(MSG_LENGTH)
+    msg = client_socket.recv(int(length))
     return msg
