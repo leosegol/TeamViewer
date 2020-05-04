@@ -24,6 +24,10 @@ class Client:
         self.client_send.connect((ip, port1))
         self.client_recv.connect((ip, port2))
 
+    def close(self):
+        self.client_send.close()
+        self.client_recv.close()
+
     def main_conversation(self):
         while True:
             print('\n\n\n', MAIN_MENU)
@@ -49,6 +53,8 @@ class Client:
                 if response == 'ok':
                     print("Wait for host to start the conversation")
                     ViewerClient(self.client_send, self.client_recv).viewer_mode()
+                    self.close()
+                    break
                 else:
                     print(response)
             input('press any key to continue...')
