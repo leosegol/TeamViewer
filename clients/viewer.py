@@ -49,6 +49,8 @@ class ViewerClient:
             else:
                 display_surface.blit(image, (0, 0))
                 pygame.display.update()
+                continue
+            break
 
     def send_mouse_instructions(self):
         mouse = Mouse(self.send_socket)
