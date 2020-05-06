@@ -53,8 +53,7 @@ class Client:
                 if response == 'ok':
                     print("Wait for host to start the conversation")
                     ViewerClient(self.client_send, self.client_recv).viewer_mode()
-                    self.close()
-                    break
+                    continue
                 else:
                     print(response)
             input('press any key to continue...')

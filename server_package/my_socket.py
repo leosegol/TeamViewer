@@ -20,7 +20,7 @@ class Socket:
         my_send(self.client_send, data)
 
     def recv(self):
-        data = my_receive(self.client_recv, 1024)
+        data = my_receive(self.client_recv, 32768)
         return data
 
     def stop_hosting(self):

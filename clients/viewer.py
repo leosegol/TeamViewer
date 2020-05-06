@@ -10,6 +10,7 @@ from protocols.my_protocol import receive as my_receive
 
 FPS = 24
 CAPTURE_EVERY = int(1000 / FPS)
+STOP = False
 
 
 class ViewerClient:
@@ -18,17 +19,18 @@ class ViewerClient:
         self.recv_socket = recv_socket
 
     def see_screen(self):
+        global STOP
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
+        #pygame.display.set_caption("Shared Screen")
         while True:
             total_data = b''
-            settings = my_receive(self.recv_socket, 1024)
+            settings = my_receive(self.recv_socket, 32768)
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
             size = int(x[1:-1].decode()), int(y[1:-1].decode())
             length = int(length[1:-1].decode())
             mode = mode[2:-1].decode()
-            print(size, mode, length)
             if data:
                 length -= len(data)
                 total_data += data
@@ -36,15 +38,14 @@ class ViewerClient:
                 data = my_receive(self.recv_socket, length)
                 length -= len(data)
                 total_data += data
-                print(length)
             if length < 0:
-                print(total_data[length:])
                 total_data = total_data[:length]
             image = pygame.image.fromstring(total_data, size, mode)
             display_surface = pygame.display.set_mode(image.get_size())
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    STOP = True
                     break
             else:
                 display_surface.blit(image, (0, 0))
