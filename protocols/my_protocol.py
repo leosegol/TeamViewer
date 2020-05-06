@@ -4,9 +4,15 @@ MSG_LENGTH = 7
 
 
 def send(client_socket, msg):
-    client_socket.send(msg)
+    try:
+        client_socket.send(msg)
+    except Exception:
+        pass
 
 
 def receive(client_socket, length):
-    msg = client_socket.recv(length)
-    return msg
+    try:
+        msg = client_socket.recv(length)
+        return msg
+    except Exception:
+        pass
