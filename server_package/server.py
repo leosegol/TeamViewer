@@ -77,11 +77,7 @@ class Server:
                     my_client.exit()
                     break
                 elif "connect " in request:
-                    try:
-                        response = self.connect(int(request.split(" ")[1]), my_client)
-                    except TypeError:
-                        my_client.send("something went wrong")
-                        continue
+                    response = self.connect(int(request.split(" ")[1]), my_client)
                     my_client.send(response)
                     if response == "ok":
                         session(my_client)

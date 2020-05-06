@@ -1,9 +1,6 @@
 import pyautogui
-import pygame
 from pynput.mouse import Button
-
 from protocols.my_protocol import send as my_send
-
 
 def convert_button(button):
     if button == Button.left:
@@ -21,28 +18,25 @@ class Mouse:
         self.display = pyautogui.size()
 
     def on_move(self, x, y):
-        x, y = pygame.mouse.get_pos()
         try:
-
-            my_send(self.client_socket, f"pos {x} {y},".encode())
+            my_send(self.client_socket, f"pos {x / self.display[0]} {y / self.display[1]},".encode())
         except OSError:
             return False
 
     def on_click(self, x, y, button, pressed):
-        x, y = pygame.mouse.get_pos()
         try:
             if pressed:
                 my_send(self.client_socket,
-                        f"click {x} {y} {convert_button(button)},".encode())
+                    f"click {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
             else:
                 my_send(self.client_socket,
-                        f"release mouse {x} {y} {convert_button(button)},".encode())
+                    f"release mouse {x / self.display[0]} {y / self.display[1]} {convert_button(button)},".encode())
 
         except OSError:
             return False
 
     def on_scroll(self, x, y, dx, dy):
         try:
-            my_send(self.client_socket, f"scroll {dx * 10} {dy * 10},".encode())
+            my_send(self.client_socket, f"scroll {dx*10} {dy*10},".encode())
         except OSError:
             return False

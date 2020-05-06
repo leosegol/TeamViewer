@@ -26,16 +26,16 @@ class HostClient:
                 pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
             elif "click" in data:
                 x, y, button = data.split("click ")[1].split(" ")
-                pyautogui.mouseDown(x=int(float(x)), y=int(float(y)),
+                pyautogui.mouseDown(x=int(float(x) * self.display[0]), y=int(float(y) * self.display[1]),
                                     button=button)
             elif "release mouse" in data:
                 x, y, button = data.split("release mouse ")[1].split(" ")
-                pyautogui.mouseUp(x=int(float(x)), y=int(float(y)),
+                pyautogui.mouseUp(x=int(float(x) * self.display[0]), y=int(float(y) * self.display[1]),
                                   button=button)
             elif "scroll" in data:
                 dx, dy = data.split("scroll ")[1].split(" ")
-                pyautogui.scroll(int(dy)*10)
-                pyautogui.hscroll(int(dx)*10)
+                pyautogui.scroll(int(dy))
+                pyautogui.hscroll(int(dx))
             elif "press" in data:
                 key = data.split("press ")[1]
                 pyautogui.keyDown(key)
@@ -51,13 +51,11 @@ class HostClient:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()
-                try:
-                    my_send(self.send_socket, str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
-                    my_send(self.send_socket, data)
-                except Exception:
-                    break
+                my_send(self.send_socket, str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
+                my_send(self.send_socket, data)
+                print("Host", data)
+                print(len(data))
 
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()
         self.execute_instructions()
-
