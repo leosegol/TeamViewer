@@ -58,18 +58,11 @@ class ViewerClient:
         with pynput.mouse.Listener(on_move=mouse.on_move, on_click=mouse.on_click,
                                    on_scroll=mouse.on_scroll) as mouse_listener:
             mouse_listener.join()
-        while True:
-            print(STOP)
-            if STOP:
-                mouse_listener.stop()
 
     def send_keyboard_instructions(self):
         keyboard = Keyboard(self.send_socket)
         with pynput.keyboard.Listener(on_press=keyboard.on_press, on_release=keyboard.on_release) as keyboard_listener:
             keyboard_listener.join()
-        while True:
-            if STOP:
-                keyboard_listener.stop()
 
     def viewer_mode(self):
         mouse = threading.Thread(target=self.send_mouse_instructions, args=())

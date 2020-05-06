@@ -60,3 +60,4 @@ class HostClient:
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()
         self.execute_instructions()
+
