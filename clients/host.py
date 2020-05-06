@@ -34,8 +34,8 @@ class HostClient:
                                   button=button)
             elif "scroll" in data:
                 dx, dy = data.split("scroll ")[1].split(" ")
-                pyautogui.scroll(int(dy)*10)
-                pyautogui.hscroll(int(dx)*10)
+                pyautogui.scroll(int(dy) * 10)
+                pyautogui.hscroll(int(dx) * 10)
             elif "press" in data:
                 key = data.split("press ")[1]
                 pyautogui.keyDown(key)
@@ -52,7 +52,8 @@ class HostClient:
             if pic:
                 data = pic.tobytes()
                 try:
-                    my_send(self.send_socket, str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
+                    my_send(self.send_socket,
+                            str((pic.mode, str(len(data)), str(pic.size[0]), str(pic.size[1]))).encode())
                     my_send(self.send_socket, data)
                 except Exception:
                     break
@@ -60,4 +61,3 @@ class HostClient:
     def host_mode(self):
         threading.Thread(target=self.send_screen, args=()).start()
         self.execute_instructions()
-
