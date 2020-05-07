@@ -22,7 +22,7 @@ class HostClient:
             data = data.split(",")[0]
             if "pos" in data:
                 x, y = data.split("pos ")[1].split(" ")
-                pyautogui.moveTo(int(float(x) * self.display[0]), int(float(y) * self.display[1]))
+                pyautogui.moveTo(int(float(x)), int(float(y)))
             elif "click" in data:
                 x, y, button = data.split("click ")[1].split(" ")
                 pyautogui.mouseDown(x=int(float(x)), y=int(float(y)),
