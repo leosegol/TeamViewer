@@ -1,5 +1,5 @@
 from protocols.my_protocol import send as my_send
-
+import pygame
 
 class Keyboard:
 
@@ -7,21 +7,23 @@ class Keyboard:
         self.client_socket = client_socket
 
     def on_press(self, key):
-        if "." in str(key):
-            key = str(key).split(".")[1]
-        else:
-            key = str(key)[1:-1]
-        try:
-            my_send(self.client_socket, f"press {key},".encode())
-        except ConnectionResetError:
-            return False
+        if pygame.display.get_active():
+            if "." in str(key):
+                key = str(key).split(".")[1]
+            else:
+                key = str(key)[1:-1]
+            try:
+                my_send(self.client_socket, f"press {key},".encode())
+            except ConnectionResetError:
+                return False
 
     def on_release(self, key):
-        if "." in str(key):
-            key = str(key).split(".")[1]
-        else:
-            key = str(key)[1:-1]
-        try:
-            my_send(self.client_socket, f"release {key},".encode())
-        except ConnectionResetError:
-            return False
+        if pygame.display.get_active():
+            if "." in str(key):
+                key = str(key).split(".")[1]
+            else:
+                key = str(key)[1:-1]
+            try:
+                my_send(self.client_socket, f"release {key},".encode())
+            except ConnectionResetError:
+                return False

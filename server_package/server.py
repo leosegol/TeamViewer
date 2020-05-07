@@ -1,7 +1,7 @@
 import random
 import socket
 import threading
-
+import constants.constants as con
 from server_package import my_socket
 
 
@@ -101,7 +101,7 @@ commands: |connect <password>|
 
 
 def main():
-    server = Server("0.0.0.0", 667, 666)
+    server = Server(con.SERVER_IP, con.RECV_SOCKET_PORT, con.SEND_SOCKET_PORT)
     print('server started')
     print(socket.gethostbyname(socket.gethostname()))
     while True:

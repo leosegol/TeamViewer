@@ -1,8 +1,7 @@
 import threading
-
 import d3dshot
 import pyautogui
-
+import constants.constants as con
 from protocols.my_protocol import receive as my_receive
 from protocols.my_protocol import send as my_send
 
@@ -17,7 +16,7 @@ class HostClient:
         pyautogui.FAILSAFE = False
         while True:
             try:
-                data = my_receive(self.recv_socket, 1024).decode()
+                data = my_receive(self.recv_socket, con.BUFFER_SIZE).decode()
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
@@ -46,7 +45,7 @@ class HostClient:
 
     def send_screen(self):
         cam = d3dshot.create()
-        cam.capture(target_fps=24)
+        cam.capture(target_fps=con.TARGET_FPS)
         while True:
             pic = cam.get_latest_frame()
             if pic:

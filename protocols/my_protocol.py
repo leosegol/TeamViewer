@@ -1,6 +1,5 @@
 import socket
-
-MSG_LENGTH = 7
+import constants.constants as con
 
 
 def send(client_socket, msg):

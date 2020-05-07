@@ -1,5 +1,6 @@
 from protocols.my_protocol import send as my_send
 from protocols.my_protocol import receive as my_receive
+import constants.constants as con
 
 
 class Socket:
@@ -20,7 +21,7 @@ class Socket:
         my_send(self.client_send, data)
 
     def recv(self):
-        data = my_receive(self.client_recv, 32768)
+        data = my_receive(self.client_recv, con.SPECIAL_BUFFER_SIZE)
         return data
 
     def stop_hosting(self):

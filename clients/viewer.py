@@ -2,7 +2,7 @@ import threading
 import os
 import pygame
 import pynput
-import json
+import constants.constants as con
 from keyboard_funcs.keyboard import Keyboard
 from mouse_funcs.mouse import Mouse
 from protocols.my_protocol import send as my_send
@@ -22,10 +22,9 @@ class ViewerClient:
         global STOP
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
-        #pygame.display.set_caption("Shared Screen")
         while True:
             total_data = b''
-            settings = my_receive(self.recv_socket, 32768)
+            settings = my_receive(self.recv_socket, con.SPECIAL_BUFFER_SIZE)
             mode, length, x, y = settings.split(b", ")
             y, data = y.split(b")")
             size = int(x[1:-1].decode()), int(y[1:-1].decode())

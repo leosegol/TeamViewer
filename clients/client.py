@@ -1,5 +1,5 @@
 import socket
-
+import constants.constants as con
 from clients.host import HostClient
 from clients.viewer import ViewerClient
 from protocols.my_protocol import send as my_send
@@ -61,7 +61,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect('10.0.0.13', 666, 667)
+    client.connect(con.IP, con.SEND_SOCKET_PORT, con.RECV_SOCKET_PORT)
     client.main_conversation()
 
 
