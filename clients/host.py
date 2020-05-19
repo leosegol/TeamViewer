@@ -5,6 +5,7 @@ import constants.constants as con
 from protocols.my_protocol import receive as my_receive
 from protocols.my_protocol import send as my_send
 
+STOP = True
 
 class HostClient:
     def __init__(self, send_socket, recv_socket):
@@ -14,12 +15,16 @@ class HostClient:
 
     def execute_instructions(self):
         pyautogui.FAILSAFE = False
+        global STOP
         while True:
             try:
                 data = my_receive(self.recv_socket, con.BUFFER_SIZE).decode()
             except ConnectionResetError:
                 break
             data = data.split(",")[0]
+            if "STOP" in data:
+                STOP = False
+                break
             if "pos" in data:
                 x, y = data.split("pos ")[1].split(" ")
                 pyautogui.moveTo(int(float(x)), int(float(y)))
@@ -46,7 +51,7 @@ class HostClient:
     def send_screen(self):
         cam = d3dshot.create()
         cam.capture(target_fps=con.TARGET_FPS)
-        while True:
+        while STOP:
             pic = cam.get_latest_frame()
             if pic:
                 data = pic.tobytes()

@@ -45,6 +45,7 @@ class ViewerClient:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     STOP = True
+                    my_send(self.send_socket, "STOP".encode())
                     break
             else:
                 display_surface.blit(image, (0, 0))

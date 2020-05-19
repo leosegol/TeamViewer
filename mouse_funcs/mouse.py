@@ -21,27 +21,27 @@ class Mouse:
         self.display = pyautogui.size()
 
     def on_move(self, x, y):
-        if pygame.display.get_active():
+        try:
             x, y = pygame.mouse.get_pos()
-            try:
-
-                my_send(self.client_socket, f"pos {x} {y},".encode())
-            except OSError:
-                return False
+        except Exception:
+            pass
+        try:
+            my_send(self.client_socket, f"pos {x} {y},".encode())
+        except OSError:
+            return False
 
     def on_click(self, x, y, button, pressed):
-        if pygame.display.get_active():
+        try:
             x, y = pygame.mouse.get_pos()
-            try:
-                if pressed:
-                    my_send(self.client_socket,
-                            f"click {x} {y} {convert_button(button)},".encode())
-                else:
-                    my_send(self.client_socket,
-                            f"release mouse {x} {y} {convert_button(button)},".encode())
-
-            except OSError:
-                return False
+        except Exception:
+            pass
+        try:
+            if pressed:
+                my_send(self.client_socket,f"click {x} {y} {convert_button(button)},".encode())
+            else:
+                my_send(self.client_socket, f"release mouse {x} {y} {convert_button(button)},".encode())
+        except OSError:
+            return False
 
     def on_scroll(self, x, y, dx, dy):
         if pygame.display.get_active():
