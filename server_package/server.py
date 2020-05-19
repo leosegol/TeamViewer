@@ -10,8 +10,9 @@ def session(client):
         if client.can_start_session():
             try:
                 data = client.recv()
-                print(data)
                 client.partner.send(data)
+                if "STOP".encode() in data:
+                    break
             except AttributeError:
                 break
 
