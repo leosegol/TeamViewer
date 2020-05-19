@@ -61,7 +61,7 @@ class Client:
 
 def main():
     client = Client()
-    client.connect(con.IP, con.SEND_SOCKET_PORT, con.RECV_SOCKET_PORT)
+    client.connect(con.LOCAL_IP, con.SEND_SOCKET_PORT, con.RECV_SOCKET_PORT)
     client.main_conversation()
 
 

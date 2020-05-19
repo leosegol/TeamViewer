@@ -58,7 +58,6 @@ class Server:
         try:
             while True:
                 request = my_client.recv()
-                print("main", request)
                 request = request.decode()
                 if request == "1":
                     my_client.become_host(self.create_password())
